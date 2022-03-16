@@ -1,0 +1,36 @@
+title spa - uusi muistiinpano
+
+note over selain:
+lomake-elementille on rekisteröity tapahtumankäsittelijä
+hoitamaan tilanteen, jossa lomake lähetetään
+end note
+
+note over selain:
+käyttäjä kirjoittaa lomakkeen kenttään
+ja painaa tallenna-nappia
+end note
+
+note over selain:
+selain suorittaa js-koodia
+ja lisää listaan uuden muistiinpanon
+ja piirtää muistiinpanot uudelleen
+lataamatta sivua uudestaan
+end note
+
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note right of selain:
+JSON: {"content": "New note", "date": "2022-03-16T10:03:55.037Z"}
+end note
+
+note over selain:
+selain lähettää lomakkeelle
+syötetyn datan palvelimelle
+end note
+
+palvelin-->selain: created 201
+
+note over selain:
+palvelin vastaa koodilla 201 created
+että muistiinpano on luotu
+end note
