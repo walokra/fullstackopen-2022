@@ -1,6 +1,9 @@
+import { useState } from "react";
 import Country from "./Country";
 
 const Countries = ({ countries, searchValue }) => {
+  const [showCountry, setShowCountry] = useState();
+
   const countriesToShow = searchValue
     ? countries.filter((country) => country.name.common.toLowerCase().includes(searchValue))
     : [];
@@ -11,30 +14,19 @@ const Countries = ({ countries, searchValue }) => {
 
   if (countriesToShow.length === 1) {
     const country = countriesToShow[0];
-    console.log("country :", country);
-    return (
-      <>
-        <div>
-          <p>capital {country.capital}</p>
-          <p>area {country.area}</p>
-          <p>
-            <b>languages</b>
-          </p>
-          <ul>
-            {Object.values(country.languages).map((lang) => (
-              <li>{lang}</li>
-            ))}
-          </ul>
-          {country.flag}
-        </div>
-      </>
-    );
+    return <Country country={country} />;
+  }
+
+  if (showCountry) {
+    return <Country country={showCountry} />;
   }
 
   return (
     <ul>
       {countriesToShow.map((country) => (
-        <Country key={country.name.common} country={country} />
+        <li key={country.name.common}>
+          {country.name.common} <button onClick={() => setShowCountry(country)}>show</button>
+        </li>
       ))}
     </ul>
   );
