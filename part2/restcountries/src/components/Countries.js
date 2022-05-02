@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Country from "./Country";
+import Weather from "./Weather";
 
 const Countries = ({ countries, searchValue }) => {
   const [showCountry, setShowCountry] = useState();
@@ -14,7 +15,13 @@ const Countries = ({ countries, searchValue }) => {
 
   if (countriesToShow.length === 1) {
     const country = countriesToShow[0];
-    return <Country country={country} />;
+
+    return (
+      <div>
+        <Country country={country} />
+        <Weather city={country.capital} />
+      </div>
+    );
   }
 
   if (showCountry) {

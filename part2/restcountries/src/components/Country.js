@@ -8,7 +8,7 @@ const Country = ({ country }) => {
       </p>
       <ul>
         {Object.values(country.languages).map((lang) => (
-          <li>{lang}</li>
+          <li key={lang}>{lang}</li>
         ))}
       </ul>
       {country.flag}
