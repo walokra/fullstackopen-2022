@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 import personService from "./services/persons";
 
 const App = () => {
@@ -9,12 +10,20 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchName, setSearchName] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((persons) => {
       setPersons(persons);
     });
   }, []);
+
+  const showMessage = (message) => {
+    setMessage(message);
+    setTimeout(() => {
+      setMessage(null);
+    }, 3000);
+  };
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -27,6 +36,7 @@ const App = () => {
 
         personService.update(person.id, changedPerson).then((returnedPerson) => {
           setPersons(persons.map((person) => (person.id !== returnedPerson.id ? person : returnedPerson)));
+          showMessage(`'${newName}' was updated`);
           setNewName("");
           setNewNumber("");
           event.target.reset();
@@ -40,6 +50,7 @@ const App = () => {
 
       personService.create(personObject).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
+        showMessage(`Added '${newName}'`);
         setNewName("");
         setNewNumber("");
         event.target.reset();
@@ -57,12 +68,14 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`)) {
       personService.deletePerson(person.id);
       setPersons(persons.filter((n) => n.id !== person.id));
+      showMessage(`'${person.name}' was deleted`);
     }
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
 
       <Filter searchName={searchName} filterPersons={filterPersons} />
 
