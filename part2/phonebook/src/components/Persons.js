@@ -2,7 +2,7 @@ import Person from "./Person";
 
 const Persons = ({ persons, searchName, deletePerson }) => {
   const personsToShow = searchName
-    ? persons.filter((person) => person.name.toLowerCase().includes(searchName))
+    ? persons.filter((person) => person.name.toLowerCase().includes(searchName.toLowerCase()))
     : persons;
 
   return (
