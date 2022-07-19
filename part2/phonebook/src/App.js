@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [searchName, setSearchName] = useState("");
   const [message, setMessage] = useState(null);
+  const [notificationType, setNotificationType] = useState("success");
 
   useEffect(() => {
     personService.getAll().then((persons) => {
@@ -18,7 +19,8 @@ const App = () => {
     });
   }, []);
 
-  const showMessage = (message) => {
+  const showMessage = (message, type = "success") => {
+    setNotificationType(type);
     setMessage(message);
     setTimeout(() => {
       setMessage(null);
@@ -66,7 +68,10 @@ const App = () => {
 
   const handlePersonDelete = (person) => {
     if (window.confirm(`Delete ${person.name}?`)) {
-      personService.deletePerson(person.id);
+      personService.deletePerson(person.id).catch((error) => {
+        showMessage(`Person '${person.name}' was already removed from server`, "error");
+        setPersons(persons.filter((n) => n.id !== person.id));
+      });
       setPersons(persons.filter((n) => n.id !== person.id));
       showMessage(`'${person.name}' was deleted`);
     }
@@ -75,7 +80,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification message={message} type={notificationType} />
 
       <Filter searchName={searchName} filterPersons={filterPersons} />
 
