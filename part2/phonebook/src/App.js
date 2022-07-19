@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import personService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,26 +11,24 @@ const App = () => {
   const [searchName, setSearchName] = useState("");
 
   useEffect(() => {
-    const eventHandler = (response) => {
-      setPersons(response.data);
-    };
-
-    const promise = axios.get("http://localhost:3001/persons");
-    promise.then(eventHandler);
+    personService.getAll().then((persons) => {
+      setPersons(persons);
+    });
   }, []);
 
   const addPerson = (event) => {
     event.preventDefault();
-
-    const noteObject = {
+    const personObject = {
       name: newName,
       number: newNumber,
       id: persons.length + 1,
     };
 
-    setPersons(persons.concat(noteObject));
-    setNewName("");
-    setNewNumber("");
+    personService.create(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setNewName("");
+      setNewNumber("");
+    });
   };
 
   const filterPersons = (event) => {
