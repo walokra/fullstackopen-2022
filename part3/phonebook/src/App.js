@@ -50,13 +50,19 @@ const App = () => {
         number: newNumber,
       };
 
-      personService.create(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        showMessage(`Added '${newName}'`);
-        setNewName("");
-        setNewNumber("");
-        event.target.reset();
-      });
+      personService
+        .create(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          showMessage(`Added '${newName}'`);
+          setNewName("");
+          setNewNumber("");
+          event.target.reset();
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+          showMessage(`${JSON.stringify(error.response.data.error)}`);
+        });
     }
   };
 
