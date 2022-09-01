@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "jest --verbose"
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test jest --verbose --runInBand --forceExit"
   },
   "author": "Marko Wallin",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "nodemon": "^2.0.19"
   },
   "devDependencies": {
-    "jest": "^29.0.1"
+    "jest": "^29.0.1",
+    "supertest": "^6.2.4"
   }
 }
