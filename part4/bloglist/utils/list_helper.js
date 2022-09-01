@@ -32,9 +32,24 @@ const mostBlogs = (array) => {
   return ordered[0];
 };
 
+const mostLikes = (array) => {
+  const grouped = _.chain(array)
+    .groupBy("author")
+    .map((value, key) => ({ author: key, blogs: value }))
+    .value();
+
+  const ordered = _.chain(grouped)
+    .map((a) => ({ author: a.author, likes: totalLikes(a.blogs) }))
+    .orderBy("likes", "desc")
+    .value();
+
+  return ordered[0];
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };
