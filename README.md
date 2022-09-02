@@ -3,7 +3,9 @@
 - Käydään Reactin kirjoittamista läpi sopivan alkeista ja edetään eri tapoihin kirjoittaa sama toiminnallisuus.
 - Osa 1, c+d: Käydään läpi tilaa ja useStaten käyttöä. Myöhemmissä vaiheissa käydään läpi vanhemman Reactin class-komponentteja riittäviltä osin, jos joutuu ylläpitämään vanhaa koodia.
 - Osa 2, a+b+c: vauhti kiihtyy, mennään jo datan hakuun palvelimelta, filteröintiin ja formeihin. Bonuksena APIen kutsuminen ja API avaimien käyttö.
-- Osa 3,
+- Osa 3, Node.js ja Express, CRUD REST API:n tekeminen ja sovelluksen vienti Herokuun, Mongon lisääminen ja pilvipalvelut.
+- Osa 4, Sovelluksen rakenne ja testauksen alkeet. Sovelluksen rakenne jne.
+- Osa 4b, async/await
 
 - TIL: Koodin suorituksen voi pysäyttää Chromen developer-konsolin debuggeriin kirjoittamalla mihin tahansa kohtaa koodia komennon debugger.
 
