@@ -8,6 +8,12 @@ const getBlogs = async () => {
   return response.body;
 };
 
+const getBlog = async (id) => {
+  const response = await api.get(`/api/blogs/${id}`);
+  return response.body;
+};
+
 module.exports = {
   getBlogs,
+  getBlog,
 };
