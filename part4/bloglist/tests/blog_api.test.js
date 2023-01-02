@@ -138,4 +138,20 @@ describe("blogs", () => {
       expect(contents).not.toContain(blogToDelete.title);
     });
   });
+
+  describe("PUT", () => {
+    test("blog likes can be updated", async () => {
+      const initialBlogs = await helper.getBlogs();
+      const blogToUpdated = initialBlogs[0];
+      blogToUpdated.likes = 100;
+
+      await api
+        .put(`/api/blogs/${blogToUpdated.id}`)
+        .send(blogToUpdated)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.likes).toBe(100);
+        });
+    });
+  });
 });
