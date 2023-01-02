@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
+const bcrypt = require("bcrypt");
 const helper = require("./test_helper");
 const app = require("../app");
+const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const api = supertest(app);
-
-const Blog = require("../models/blog");
 
 const initialBlogs = [
   {
@@ -24,10 +25,15 @@ const initialBlogs = [
 
 describe("blogs", () => {
   beforeEach(async () => {
+    await User.deleteMany({});
+    const passwordHash = await bcrypt.hash("password", 10);
+    const user = new User({ username: "root", passwordHash });
+    await user.save();
+
     await Blog.deleteMany({});
-    let blogObject = new Blog(initialBlogs[0]);
+    let blogObject = new Blog({ ...initialBlogs[0], user: user._id });
     await blogObject.save();
-    blogObject = new Blog(initialBlogs[1]);
+    blogObject = new Blog({ ...initialBlogs[1], user: user._id });
     await blogObject.save();
   });
 
@@ -74,11 +80,14 @@ describe("blogs", () => {
 
   describe("POST", () => {
     test("blog can be inserted", async () => {
+      const users = await helper.getUsers();
+
       const newBlog = {
         title: "Way of the kings",
         author: "Brandon Sanderson",
         url: "https://google.com",
         likes: 17,
+        userId: users[0]._id,
       };
 
       await api
@@ -97,10 +106,13 @@ describe("blogs", () => {
     });
 
     test("likes is defaulted to 0", async () => {
+      const users = await helper.getUsers();
+
       const newBlog = {
         title: "TDD harms architecture",
         author: "Robert C. Martin",
         url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+        userId: users[0]._id,
       };
 
       await api
