@@ -15,6 +15,17 @@ usersRouter.get("/", async (request, response) => {
 usersRouter.post("/", async (request, response) => {
   const { username, name, password } = request.body;
 
+  if (
+    username === undefined ||
+    password === undefined ||
+    username.legth < 3 ||
+    password.length < 3
+  ) {
+    return response.status(400).json({
+      error: "username or password too short",
+    });
+  }
+
   const existingUser = await User.findOne({ username });
   if (existingUser) {
     return response.status(400).json({
