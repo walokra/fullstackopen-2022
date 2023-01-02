@@ -121,4 +121,21 @@ describe("blogs", () => {
       await api.post("/api/blogs").send(invalidBlog).expect(400);
     });
   });
+
+  describe("DELETE", () => {
+    test("returns status code 204 if succeeded", async () => {
+      const initialBlogs = await helper.getBlogs();
+      const blogToDelete = initialBlogs[0];
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+      const blogs = await helper.getBlogs();
+
+      expect(blogs).toHaveLength(initialBlogs.length - 1);
+
+      const contents = blogs.map((r) => r.title);
+
+      expect(contents).not.toContain(blogToDelete.title);
+    });
+  });
 });
