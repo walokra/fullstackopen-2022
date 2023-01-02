@@ -23,9 +23,9 @@ const initialBlogs = [
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  let blogObject = new Note(initialBlogs[0]);
+  let blogObject = new Blog(initialBlogs[0]);
   await blogObject.save();
-  blogObject = new Note(initialBlogs[1]);
+  blogObject = new Blog(initialBlogs[1]);
   await blogObject.save();
 });
 
@@ -42,18 +42,26 @@ test("there are two blogs", async () => {
   expect(response.body).toHaveLength(2);
 });
 
-test("all notes are returned", async () => {
+test("all blogs are returned", async () => {
   const response = await api.get("/api/blogs");
 
   expect(response.body).toHaveLength(initialBlogs.length);
 });
 
-test("a specific note is within the returned notes", async () => {
+test("a specific blog is within the returned blogs", async () => {
   const response = await api.get("/api/blogs");
 
   const contents = response.body.map((r) => r.title);
 
-  expect(contents).toContain("First class test");
+  expect(contents).toContain("React patterns");
+});
+
+test("blog is identified by id field", async () => {
+  const response = await api.get("/api/blogs");
+
+  response.body.forEach((blog) => {
+    expect(blog.id).toBeDefined();
+  });
 });
 
 afterAll(() => {
