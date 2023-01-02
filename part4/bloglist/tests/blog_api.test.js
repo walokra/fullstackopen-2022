@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
+const helper = require("./test_helper");
 const app = require("../app");
 
 const api = supertest(app);
@@ -62,6 +63,29 @@ test("blog is identified by id field", async () => {
   response.body.forEach((blog) => {
     expect(blog.id).toBeDefined();
   });
+});
+
+test("blog can be inserted", async () => {
+  const newBlog = {
+    title: "Way of the kings",
+    author: "Brandon Sanderson",
+    url: "https://google.com",
+    likes: 17,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const blogs = await helper.getBlogs();
+
+  expect(blogs).toHaveLength(initialBlogs.length + 1);
+
+  const contents = blogs.map((n) => n.title);
+
+  expect(contents).toContain("Way of the kings");
 });
 
 afterAll(() => {
