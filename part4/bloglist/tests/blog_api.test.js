@@ -24,11 +24,23 @@ const initialBlogs = [
 ];
 
 describe("blogs", () => {
+  let token;
+
   beforeEach(async () => {
     await User.deleteMany({});
-    const passwordHash = await bcrypt.hash("password", 10);
-    const user = new User({ username: "root", passwordHash });
+    const username = "root";
+    const password = "password";
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = new User({ username, passwordHash });
     await user.save();
+
+    const response = await api
+      .post("/api/login")
+      .send({ username, password })
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    token = response.body.token;
 
     await Blog.deleteMany({});
     let blogObject = new Blog({ ...initialBlogs[0], user: user._id });
@@ -45,24 +57,31 @@ describe("blogs", () => {
     test("blogs are returned as json", async () => {
       await api
         .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
     });
 
     test("there are two blogs", async () => {
-      const response = await api.get("/api/blogs");
+      const response = await api
+        .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`);
 
       expect(response.body).toHaveLength(2);
     });
 
     test("all blogs are returned", async () => {
-      const response = await api.get("/api/blogs");
+      const response = await api
+        .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`);
 
       expect(response.body).toHaveLength(initialBlogs.length);
     });
 
     test("a specific blog is within the returned blogs", async () => {
-      const response = await api.get("/api/blogs");
+      const response = await api
+        .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`);
 
       const contents = response.body.map((r) => r.title);
 
@@ -70,7 +89,9 @@ describe("blogs", () => {
     });
 
     test("blog is identified by id field", async () => {
-      const response = await api.get("/api/blogs");
+      const response = await api
+        .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`);
 
       response.body.forEach((blog) => {
         expect(blog.id).toBeDefined();
@@ -93,6 +114,7 @@ describe("blogs", () => {
       await api
         .post("/api/blogs")
         .send(newBlog)
+        .set("Authorization", `Bearer ${token}`)
         .expect(201)
         .expect("Content-Type", /application\/json/);
 
@@ -118,6 +140,7 @@ describe("blogs", () => {
       await api
         .post("/api/blogs")
         .send(newBlog)
+        .set("Authorization", `Bearer ${token}`)
         .expect(201)
         .expect((res) => {
           expect(res.body.likes).toBe(0);
@@ -130,7 +153,19 @@ describe("blogs", () => {
         author: "Robert C. Martin",
       };
 
-      await api.post("/api/blogs").send(invalidBlog).expect(400);
+      await api
+        .post("/api/blogs")
+        .send(invalidBlog)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(400);
+    });
+
+    test("fails with status code 401 if no token", async () => {
+      await api
+        .post("/api/blogs")
+        .send({})
+        .set("Authorization", `Bearer`)
+        .expect(401);
     });
   });
 
@@ -139,7 +174,10 @@ describe("blogs", () => {
       const initialBlogs = await helper.getBlogs();
       const blogToDelete = initialBlogs[0];
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(204);
 
       const blogs = await helper.getBlogs();
 
@@ -160,6 +198,7 @@ describe("blogs", () => {
       await api
         .put(`/api/blogs/${blogToUpdated.id}`)
         .send(blogToUpdated)
+        .set("Authorization", `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           expect(res.body.likes).toBe(100);
