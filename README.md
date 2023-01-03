@@ -61,3 +61,7 @@ https://fullstackopen.com/
   }
 }
 ```
+
+- Mongo ja useat taulut: Mongo tukee useampaan kokoelmaan kohdistuvia (lookup-aggregaattikyselyitä)[https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/]  versiosta 3.2 alkaen, mutta niitä ei kuitenkaan käsitellä kurssilla :/
+
+- NoSQL-tietokanta (dokumenttitietokanta) ja datan organisointitapaa käsitellään havainnollisesti.
