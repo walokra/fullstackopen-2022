@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
-import { getAll } from "./services/blogs";
+import { create, getAll } from "./services/blogs";
 import LoginForm from "./components/LoginForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [user, setUser] = useState(null);
+  const [state, setState] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
 
   useEffect(() => {
     if (user) {
@@ -17,14 +22,68 @@ const App = () => {
 
   const logout = (event) => {
     event.preventDefault();
-		setUser(null);
-		setBlogs([]);
+    setUser(null);
+    setBlogs([]);
     window.localStorage.clear();
   };
 
   const logoutForm = () => (
     <form onSubmit={logout}>
       <button type="submit">logout</button>
+    </form>
+  );
+
+  const addBlog = async (event) => {
+    event.preventDefault();
+    await create(state);
+    setState({
+      title: "",
+      author: "",
+      url: "",
+    });
+
+    const blogs = await getAll();
+    setBlogs(blogs);
+  };
+
+  const handleChange = (evt) => {
+    const value = evt.target.value;
+    setState({
+      ...state,
+      [evt.target.name]: value,
+    });
+  };
+
+  const addBlogForm = () => (
+    <form onSubmit={addBlog}>
+      <div>
+        title
+        <input
+          type="text"
+          value={state.title}
+          name="title"
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        author
+        <input
+          type="text"
+          value={state.author}
+          name="author"
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        url
+        <input
+          type="text"
+          value={state.url}
+          name="url"
+          onChange={handleChange}
+        />
+      </div>
+      <button type="submit">create</button>
     </form>
   );
 
@@ -44,6 +103,10 @@ const App = () => {
       )}
 
       <h2>Blogs</h2>
+
+      {user !== null && addBlogForm()}
+
+      <br />
 
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
