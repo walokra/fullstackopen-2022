@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { setToken } from "../services/blogs";
 import { login } from "../services/login";
 
 const LoginForm = ({ setUser, onError }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("user");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      setToken(user.token);
+    }
+  }, [setUser]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -14,6 +23,8 @@ const LoginForm = ({ setUser, onError }) => {
         username,
         password,
       });
+
+      window.localStorage.setItem("user", JSON.stringify(user));
 
       setToken(user.token);
 

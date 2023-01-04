@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
-import { create, getAll } from "./services/blogs";
+import { getAll } from "./services/blogs";
 import LoginForm from "./components/LoginForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [newBlog, setNewBlog] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const [user, setUser] = useState(null);
 
@@ -15,6 +14,19 @@ const App = () => {
       getAll().then((blogs) => setBlogs(blogs));
     }
   }, [user]);
+
+  const logout = (event) => {
+    event.preventDefault();
+		setUser(null);
+		setBlogs([]);
+    window.localStorage.clear();
+  };
+
+  const logoutForm = () => (
+    <form onSubmit={logout}>
+      <button type="submit">logout</button>
+    </form>
+  );
 
   return (
     <div>
@@ -27,6 +39,7 @@ const App = () => {
       ) : (
         <div>
           <p>{user.name} logged in</p>
+          {logoutForm()}
         </div>
       )}
 
