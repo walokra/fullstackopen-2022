@@ -6,19 +6,36 @@ import LoginForm from "./components/LoginForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [message, setMessage] = useState(null);
   const [user, setUser] = useState(null);
   const [state, setState] = useState({
     title: "",
     author: "",
     url: "",
   });
+  const [notificationType, setNotificationType] = useState("success");
 
   useEffect(() => {
     if (user) {
       getAll().then((blogs) => setBlogs(blogs));
     }
   }, [user]);
+
+  const showMessage = (message, type = "success") => {
+    setNotificationType(type);
+    setMessage(message);
+    setTimeout(() => {
+      setMessage(null);
+    }, 3000);
+  };
+
+  const handleError = (message, type = "error") => {
+    setNotificationType(type);
+    setMessage(message);
+    setTimeout(() => {
+      setMessage(null);
+    }, 3000);
+  };
 
   const logout = (event) => {
     event.preventDefault();
@@ -35,7 +52,14 @@ const App = () => {
 
   const addBlog = async (event) => {
     event.preventDefault();
-    await create(state);
+    try {
+      const addedBlog = await create(state);
+      showMessage(`a new blog '${addedBlog.title}' by ${addedBlog.author} added`);
+    } catch (error) {
+      console.log(error);
+      showMessage(`an error happened: ${JSON.stringify(error.response.statusText)}`);
+    }
+
     setState({
       title: "",
       author: "",
@@ -91,10 +115,10 @@ const App = () => {
     <div>
       <h1>Blogs</h1>
 
-      <Notification message={errorMessage} />
+      <Notification message={message} type={notificationType} />
 
       {user === null ? (
-        <LoginForm onError={setErrorMessage} setUser={setUser} />
+        <LoginForm onError={handleError} setUser={setUser} />
       ) : (
         <div>
           <p>{user.name} logged in</p>

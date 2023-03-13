@@ -32,7 +32,7 @@ const LoginForm = ({ setUser, onError }) => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      onError("wrong credentials");
+      onError("wrong username or password");
       setTimeout(() => {
         onError(null);
       }, 5000);

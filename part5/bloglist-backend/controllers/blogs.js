@@ -12,7 +12,7 @@ blogsRouter.get("/", async (request, response) => {
 blogsRouter.post("/", async (request, response) => {
   const body = request.body;
 
-  if (body.title === undefined || body.url === undefined) {
+  if (body.title === undefined || body.title.length == 0 || body.url === undefined) {
     return response.status(400).end();
   }
 
