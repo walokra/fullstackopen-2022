@@ -13,7 +13,7 @@ export const getAll = () => {
   };
 
   const request = axios.get(baseUrl, config);
-  return request.then((response) => response.data);
+  return request.then((response) => response.data.sort((a, b) => b.likes - a.likes));
 };
 
 export const create = async (newObject) => {
