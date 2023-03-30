@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
-import { create, getAll } from "./services/blogs";
+import { create, getAll, update } from "./services/blogs";
 import LoginForm from "./components/LoginForm";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
@@ -35,6 +35,25 @@ const App = () => {
       const addedBlog = await create(blogObject);
       showMessage(
         `a new blog '${addedBlog.title}' by ${addedBlog.author} added`,
+        "success"
+      );
+    } catch (error) {
+      console.log(error);
+      showMessage(
+        `an error happened: ${JSON.stringify(error.response.statusText)}`,
+        "error"
+      );
+    }
+
+    const blogs = await getAll();
+    setBlogs(blogs);
+  };
+
+  const updateBlog = async (blogObject) => {
+    try {
+      const updatedBlog = await update(blogObject.id, blogObject);
+      showMessage(
+        `blog '${updatedBlog.title}' by ${updatedBlog.author} updated`,
         "success"
       );
     } catch (error) {
@@ -98,7 +117,7 @@ const App = () => {
       <br />
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       ))}
     </div>
   );
