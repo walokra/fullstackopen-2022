@@ -1,72 +1,72 @@
-import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
-import Notification from "./components/Notification";
-import { create, getAll, update, remove } from "./services/blogs";
-import LoginForm from "./components/LoginForm";
-import BlogForm from "./components/BlogForm";
-import Togglable from "./components/Togglable";
+import { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
+import Notification from './components/Notification'
+import { create, getAll, update, remove } from './services/blogs'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [message, setMessage] = useState(null);
-  const [user, setUser] = useState(null);
-  const blogFormRef = useRef();
+  const [blogs, setBlogs] = useState([])
+  const [message, setMessage] = useState(null)
+  const [user, setUser] = useState(null)
+  const blogFormRef = useRef()
 
-  const [notificationType, setNotificationType] = useState("success");
+  const [notificationType, setNotificationType] = useState('success')
 
   useEffect(() => {
     if (user) {
-      getAll().then((blogs) => setBlogs(blogs));
+      getAll().then((blogs) => setBlogs(blogs))
     }
-  }, [user]);
+  }, [user])
 
-  const showMessage = (message, type = "success") => {
-    setNotificationType(type);
-    setMessage(message);
+  const showMessage = (message, type = 'success') => {
+    setNotificationType(type)
+    setMessage(message)
     setTimeout(() => {
-      setMessage(null);
-    }, 3000);
-  };
+      setMessage(null)
+    }, 3000)
+  }
 
   const addBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility();
+    blogFormRef.current.toggleVisibility()
 
     try {
-      const addedBlog = await create(blogObject);
+      const addedBlog = await create(blogObject)
       showMessage(
         `a new blog '${addedBlog.title}' by ${addedBlog.author} added`,
-        "success"
-      );
+        'success'
+      )
     } catch (error) {
-      console.log(error);
+      console.log(error)
       showMessage(
         `an error happened: ${JSON.stringify(error.response.statusText)}`,
-        "error"
-      );
+        'error'
+      )
     }
 
-    const blogs = await getAll();
-    setBlogs(blogs);
-  };
+    const blogs = await getAll()
+    setBlogs(blogs)
+  }
 
   const updateBlog = async (blogObject) => {
     try {
-      const updatedBlog = await update(blogObject.id, blogObject);
+      const updatedBlog = await update(blogObject.id, blogObject)
       showMessage(
         `blog '${updatedBlog.title}' by ${updatedBlog.author} updated`,
-        "success"
-      );
+        'success'
+      )
     } catch (error) {
-      console.log(error);
+      console.log(error)
       showMessage(
         `an error happened: ${JSON.stringify(error.response.statusText)}`,
-        "error"
-      );
+        'error'
+      )
     }
 
-    const blogs = await getAll();
-    setBlogs(blogs);
-  };
+    const blogs = await getAll()
+    setBlogs(blogs)
+  }
 
   const removeBlog = async (blogObject) => {
     try {
@@ -75,47 +75,47 @@ const App = () => {
           `Remove blog ${blogObject.title} by ${blogObject.author}?`
         )
       ) {
-        await remove(blogObject.id);
-        showMessage(`blog removed`, "success");
+        await remove(blogObject.id)
+        showMessage('blog removed', 'success')
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
       showMessage(
         `an error happened: ${JSON.stringify(error.response.statusText)}`,
-        "error"
-      );
+        'error'
+      )
     }
 
-    const blogs = await getAll();
-    setBlogs(blogs);
-  };
+    const blogs = await getAll()
+    setBlogs(blogs)
+  }
 
-  const handleError = (message, type = "error") => {
-    setNotificationType(type);
-    setMessage(message);
+  const handleError = (message, type = 'error') => {
+    setNotificationType(type)
+    setMessage(message)
     setTimeout(() => {
-      setMessage(null);
-    }, 3000);
-  };
+      setMessage(null)
+    }, 3000)
+  }
 
   const logout = (event) => {
-    event.preventDefault();
-    setUser(null);
-    setBlogs([]);
-    window.localStorage.clear();
-  };
+    event.preventDefault()
+    setUser(null)
+    setBlogs([])
+    window.localStorage.clear()
+  }
 
   const logoutForm = () => (
     <form onSubmit={logout}>
       <button type="submit">logout</button>
     </form>
-  );
+  )
 
   const addBlogForm = () => (
     <Togglable buttonLabel="new blog" ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
     </Togglable>
-  );
+  )
 
   return (
     <div>
@@ -148,7 +148,7 @@ const App = () => {
         />
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
