@@ -13,7 +13,9 @@ export const getAll = () => {
   };
 
   const request = axios.get(baseUrl, config);
-  return request.then((response) => response.data.sort((a, b) => b.likes - a.likes));
+  return request.then((response) =>
+    response.data.sort((a, b) => b.likes - a.likes)
+  );
 };
 
 export const create = async (newObject) => {
@@ -31,5 +33,14 @@ export const update = (id, newObject) => {
   };
 
   const request = axios.put(`${baseUrl}/${id}`, newObject, config);
+  return request.then((response) => response.data);
+};
+
+export const remove = (id) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const request = axios.delete(`${baseUrl}/${id}`, config);
   return request.then((response) => response.data);
 };
