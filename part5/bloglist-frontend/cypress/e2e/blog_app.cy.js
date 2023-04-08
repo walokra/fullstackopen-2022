@@ -81,6 +81,9 @@ describe('Blog ', function() {
 
         cy.contains('like')
           .click()
+
+        cy.contains('Best Practices for End-to-End Testing with Cypress')
+          .contains('likes: 2')
       })
 
       it('it can be removed by creator', function () {
@@ -98,7 +101,7 @@ describe('Blog ', function() {
         cy.contains('Best Practices for End-to-End Testing with Cypress').should('not.exist')
       })
 
-      it.only('only creator sees remove button', function () {
+      it('only creator sees remove button', function () {
         // Change user
         cy.contains('logout').click()
         cy.login({ username: 'richard', password: 'password' })
@@ -108,6 +111,47 @@ describe('Blog ', function() {
           .click()
 
         cy.contains('remove').should('not.exist')
+      })
+    })
+
+    describe('and multiple blogs are sorted', function () {
+      beforeEach(function () {
+        const blogs = [{
+          title: 'Best Practices for End-to-End Testing with Cypress',
+          author: 'Cypress',
+          url: 'https://docs.cypress.io/guides/references/best-practices',
+          likes: 1,
+        },
+        {
+          title: 'End-to-End testing with Cypress',
+          author: 'Cypress',
+          url: 'https://www.cypress.io/',
+          likes: 2,
+        },
+        {
+          title: 'Playwright or Cypress which is better?',
+          author: 'Playwright',
+          url: 'https://www.playwright.io/',
+          likes: 2,
+        }]
+
+        blogs.forEach(blog => {
+          cy.createBlog(blog)
+        })
+      })
+
+      it('liked blog is sorted first', function () {
+        cy.get('.blog').eq(0).should('contain', 'End-to-End testing with Cypress')
+
+        cy.contains('Playwright or Cypress which is better?')
+          .contains('view')
+          .click()
+
+        cy.contains('Playwright or Cypress which is better?')
+          .contains('like')
+          .click()
+
+        cy.get('.blog').eq(0).should('contain', 'Playwright or Cypress which is better?')
       })
     })
   })
