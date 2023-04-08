@@ -6,6 +6,7 @@ import Blog from './Blog'
 
 describe('<Togglable />', () => {
   let container
+  let updateBlog = jest.fn()
 
   beforeEach(() => {
     const blog = {
@@ -17,7 +18,7 @@ describe('<Togglable />', () => {
 
     container= render(<Blog
       blog={blog}
-      updateBlog={jest.fn()}
+      updateBlog={updateBlog}
       username={null}
       removeBlog={jest.fn()} />).container
   })
@@ -61,4 +62,16 @@ describe('<Togglable />', () => {
       'unknown user'
     )
   })
+
+  test('likes button calls updateBlog', async () => {
+    const user = userEvent.setup()
+
+    const likeButton = screen.getByText('like')
+
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(updateBlog.mock.calls).toHaveLength(2)
+  })
+
 })
