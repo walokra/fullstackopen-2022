@@ -1,37 +1,64 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-test('renders content', () => {
-  const blog = {
-    title: 'Component testing is done with react-testing-library',
-    author: 'Jest',
-    url: 'https://testing-library.com/docs/react-testing-library/intro',
-    likes: 1,
-  }
+describe('<Togglable />', () => {
+  let container
 
-  const { container } = render(<Blog
-    blog={blog}
-    updateBlog={jest.fn()}
-    username={null}
-    removeBlog={jest.fn()} />)
+  beforeEach(() => {
+    const blog = {
+      title: 'Component testing is done with react-testing-library',
+      author: 'Jest',
+      url: 'https://testing-library.com/docs/react-testing-library/intro',
+      likes: 1,
+    }
 
-  const div = container.querySelector('.blog')
-  expect(div).toHaveTextContent(
-    'Component testing is done with react-testing-library'
-  )
-  expect(div).toHaveTextContent(
-    'Jest'
-  )
-})
+    container= render(<Blog
+      blog={blog}
+      updateBlog={jest.fn()}
+      username={null}
+      removeBlog={jest.fn()} />).container
+  })
 
-test('url and likes is not rendered by default', () => {
-  expect(screen.queryByText(
-    'https://testing-library.com/docs/react-testing-library/intro'
-  )).toBeNull()
+  test('renders content', () => {
+    const div = container.querySelector('.blog')
+    expect(div).toHaveTextContent(
+      'Component testing is done with react-testing-library'
+    )
+    expect(div).toHaveTextContent(
+      'Jest'
+    )
+  })
 
-  expect(screen.queryByText(
-    'likes:'
-  )).toBeNull()
+  test('url and likes is not rendered by default', () => {
+    expect(screen.queryByText(
+      'https://testing-library.com/docs/react-testing-library/intro'
+    )).toBeNull()
+
+    expect(screen.queryByText(
+      'likes:'
+    )).toBeNull()
+  })
+
+  test('after clicking the button, url, likes and user are displayed', async () => {
+    const user = userEvent.setup()
+    const button = screen.getByText('view')
+    await user.click(button)
+
+    const div = container.querySelector('.blog')
+
+    expect(div).toHaveTextContent(
+      'https://testing-library.com/docs/react-testing-library/intro'
+    )
+
+    expect(div).toHaveTextContent(
+      'likes:'
+    )
+
+    expect(div).toHaveTextContent(
+      'unknown user'
+    )
+  })
 })
