@@ -45,6 +45,7 @@ const BlogForm = ({ createBlog }) => {
           value={state.author}
           name="author"
           onChange={handleChange}
+          placeholder='write blog author here'
         />
       </div>
       <div>
@@ -54,6 +55,7 @@ const BlogForm = ({ createBlog }) => {
           value={state.url}
           name="url"
           onChange={handleChange}
+          placeholder='write blog url here'
         />
       </div>
       <button type="submit">create</button>
