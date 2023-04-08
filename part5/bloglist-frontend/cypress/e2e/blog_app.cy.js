@@ -2,12 +2,19 @@ describe('Blog ', function() {
   beforeEach(function() {
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
 
-    const user = {
+    const users = [{
       name: 'Richard Roe',
       username: 'richard',
       password: 'password'
-    }
-    cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user)
+    },{
+      name: 'John Doe',
+      username: 'john',
+      password: 'password'
+    }]
+
+    users.forEach(user => {
+      cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user)
+    })
 
     cy.visit('')
   })
@@ -42,7 +49,7 @@ describe('Blog ', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.login({ username: 'richard', password: 'password' })
+      cy.login({ username: 'john', password: 'password' })
     })
 
     it('A blog can be created', function() {
@@ -91,6 +98,17 @@ describe('Blog ', function() {
         cy.contains('Best Practices for End-to-End Testing with Cypress').should('not.exist')
       })
 
+      it.only('only creator sees remove button', function () {
+        // Change user
+        cy.contains('logout').click()
+        cy.login({ username: 'richard', password: 'password' })
+
+        cy.contains('Best Practices for End-to-End Testing with Cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('remove').should('not.exist')
+      })
     })
   })
 
