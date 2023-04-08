@@ -28,7 +28,7 @@ const Blog = ({ username, blog, updateBlog, removeBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       {blog.title} {blog.author}
       &nbsp;{' '}
       <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
