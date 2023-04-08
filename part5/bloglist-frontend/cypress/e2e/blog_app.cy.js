@@ -75,6 +75,22 @@ describe('Blog ', function() {
         cy.contains('like')
           .click()
       })
+
+      it('it can be removed by creator', function () {
+        cy.contains('Best Practices for End-to-End Testing with Cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('remove')
+          .click()
+
+        cy.on('window:confirm', () => true)
+
+        cy.contains('blog removed')
+
+        cy.contains('Best Practices for End-to-End Testing with Cypress').should('not.exist')
+      })
+
     })
   })
 
