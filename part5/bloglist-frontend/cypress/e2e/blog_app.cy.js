@@ -54,6 +54,28 @@ describe('Blog ', function() {
 
       cy.contains('End-to-End testing with Cypress')
     })
+
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        const blog = {
+          title: 'Best Practices for End-to-End Testing with Cypress',
+          author: 'Cypress',
+          url: 'https://docs.cypress.io/guides/references/best-practices',
+          likes: 1,
+        }
+
+        cy.createBlog(blog)
+      })
+
+      it('it can be liked', function () {
+        cy.contains('Best Practices for End-to-End Testing with Cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('like')
+          .click()
+      })
+    })
   })
 
 })
