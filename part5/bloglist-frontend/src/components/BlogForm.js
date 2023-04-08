@@ -35,6 +35,7 @@ const BlogForm = ({ createBlog }) => {
           value={state.title}
           name="title"
           onChange={handleChange}
+          placeholder='write blog title here'
         />
       </div>
       <div>
